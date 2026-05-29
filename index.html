@@ -1,3 +1,79 @@
+document.getElementById('keyboard-input-group').classList.add('hidden');
+            document.getElementById('simulated-text').value = "";
+            nextQuestion();
+        }
+
+        function nextQuestion() {
+            playSynthSound('pop');
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < selectedQuestions.length) {
+                loadQuestion();
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            document.getElementById('screen-play').classList.add('hidden');
+            document.getElementById('screen-outro').classList.remove('hidden');
+
+            document.getElementById('final-score').innerText = `${score}/100`;
+            document.getElementById('perfect-count').innerText = `${firstTryCorrectCount} / 10`;
+
+            const evaluation = document.getElementById('rank-evaluation');
+            if (score >= 90) {
+                evaluation.innerText = "XUẤT SẮC! Bạn đạt cấp độ Cao Thủ Anh Ngữ Siêu Nhân Gao Đỏ! Trái đất an toàn nhờ tài năng phát âm siêu chuẩn của bạn!";
+            } else if (score >= 70) {
+                evaluation.innerText = "TUYỆT VỜI! Bạn là Chiến binh Phát Âm Dũng Cảm. Chỉ cần luyện thêm một chút là bạn sẽ hoàn hảo!";
+            } else {
+                evaluation.innerText = "CỐ GẮNG LÊN! Siêu nhân Gao Đỏ muốn bạn tập luyện nhiều hơn một chút để đánh bại lũ quái vật cứng đầu nhé!";
+            }
+
+            for (let i = 0; i < 5; i++) {
+                setTimeout(createConfetti, i * 400);
+            }
+        }
+
+        function restartGame() {
+            startGame();
+        }
+
+        function toggleKeyboardInput() {
+            const group = document.getElementById('keyboard-input-group');
+            group.classList.toggle('hidden');
+        }
+
+        function submitSimulatedPronunciation() {
+            const text = document.getElementById('simulated-text').value;
+            if (text.trim() === "") return;
+            verifyPronunciation(text);
+        }
+
+        // --- CONFETTI PARTICLE SYSTEM ---
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 8 + 4;
+                this.speedX = Math.random() * 10 - 5;
+                this.speedY = Math.random() * -15 - 5;
+                this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                this.gravity = 0.4;
+                this.alpha = 1;
+            }
+            update() {
 this.x += this.speedX;
                 this.y += this.speedY;
                 this.speedY += this.gravity;
